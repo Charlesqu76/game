@@ -1,5 +1,7 @@
 import Monster from "./monster";
 import MainCharacter from "./main_character";
+import { Controller } from "./controller.js";
+import { Application, Sprite, Assets, Graphics } from "pixi.js";
 
 const init = () => {
   const width = 1200;
@@ -22,30 +24,13 @@ const init = () => {
     ctx.clearRect(0, 0, width, height);
     items.forEach((item) => {
       item.draw();
+      if (item.role === "monster") {
+        item.trackTarget();
+      }
     });
   };
 
   const step = 5;
-  document.addEventListener("keypress", (e) => {
-    const { key } = e;
-    switch (key) {
-      case "a":
-        mainCharater.setCoordinate(mainCharater.x - step, mainCharater.y);
-        break;
-      case "d":
-        mainCharater.setCoordinate(mainCharater.x + step, mainCharater.y);
-        break;
-      case "w":
-        mainCharater.setCoordinate(mainCharater.x, mainCharater.y - step);
-        break;
-      case "s":
-        mainCharater.setCoordinate(mainCharater.x, mainCharater.y + step);
-        break;
-      default:
-        break;
-    }
-    updateCanvas();
-  });
 
   mainCharater.setCoordinate(20, 20);
   mainCharater.draw();
@@ -56,14 +41,43 @@ const init = () => {
     items.push(i);
   }
 
-  setInterval(() => {
-    items.forEach((item) => {
-      if (item.role === "monster") {
-        item.trackTarget();
-      }
-    });
-    updateCanvas();
-  }, 100);
+  const fps = 60;
+  let lastTime = 0;
+  // const logic = (time) => {
+  //   requestAnimationFrame(logic);
+  //   if (time - lastTime < 1000 / fps) {
+  //     return;
+  //   }
+  //   let realFPS = 1000 / (time - lastTime);
+  //   console.log("real fps", realFPS);
+  //   updateCanvas();
+  //   lastTime = time;
+  // };
+  // requestAnimationFrame(logic);
 };
 
-init();
+// init();
+
+const i = async () => {
+  const app = new Application();
+  await app.init({ background: "#1099bb", resizeTo: window });
+  document.body.appendChild(app.canvas);
+
+  const texture = await Assets.load("https://pixijs.com/assets/bunny.png");
+
+  const square = new Sprite(texture);
+  app.stage.addChild(square);
+  square.anchor.set(0.5);
+
+  const controller = new Controller();
+
+  square.x = app.screen.width / 2;
+  square.y = app.screen.height / 2;
+  app.ticker.add((time) => {
+    square.rotation += 0.1 * time.deltaTime;
+  });
+
+  const step = 5;
+};
+
+i();

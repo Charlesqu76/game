@@ -10,4 +10,6 @@ export default class MainCharacter extends Character {
     this.ctx.closePath();
     this.ctx.stroke();
   };
+
+  bullet = () => {};
 }
