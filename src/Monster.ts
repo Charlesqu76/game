@@ -1,6 +1,5 @@
 import { Graphics } from "pixi.js";
 import Character from "./Character";
-import { isCollison } from "./util/collision";
 
 export default class Monster extends Character {
   item = null;

@@ -1,5 +1,7 @@
 import { Application, Assets, Graphics, Renderer, Sprite } from "pixi.js";
 import { isCollison } from "./util/collision";
+import { throttle } from "./util/throttle";
+import Bullet from "./Bullet";
 
 interface IProp {
   app: Application;
@@ -14,6 +16,8 @@ export default class Character implements IProp {
   x: number;
   y: number;
   item: Graphics;
+  shootSpeed = 1;
+  shootFrequent = 500;
   constructor(props: IProp) {
     this.app = props.app;
     this.x = props.x;
@@ -23,6 +27,8 @@ export default class Character implements IProp {
   getItem = (): Graphics => {
     throw Error("child ");
   };
+
+  // static moveToTarget1 = () => {};
 
   moveToTarget = (item: Character) => {
     this.app.ticker.add(() => {
@@ -40,6 +46,25 @@ export default class Character implements IProp {
       if (isCollison({ obj: this.item, target: item.item })) {
         this.app.stage.removeChild(this.item);
       }
+    });
+  };
+
+  setBullet = () => {
+    return new Graphics().rect(0, 0, 10, 20).fill(0x002200);
+  };
+
+  shoot = () => {
+    const bullet = throttle(() => {
+      const bullet = this.setBullet();
+      this.app.stage.addChild(bullet);
+      bullet.x = this.item.x;
+      bullet.y = this.item.y;
+      // bullet.moveToTarget(this.monsterList[0]);
+      // bullet.isCollison(this.monsterList[0]);
+    }, this.shootFrequent);
+
+    this.app.ticker.add(() => {
+      bullet();
     });
   };
 }

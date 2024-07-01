@@ -9,7 +9,7 @@ export default class MainCharacter extends Character {
   monsterList: Character[];
   constructor(props) {
     super(props);
-    this.monsterList = props.monsterList;
+    this.monsterList = props.monsterList || [];
     this.init();
   }
   init = async () => {
@@ -36,30 +36,6 @@ export default class MainCharacter extends Character {
         this.item.x += step;
       }
     });
-
-    this.shoot();
-  };
-
-  shoot = () => {
-    const b = throttle(() => {
-      // if (!this.monsterList.length) {
-      //   return;
-      // }
-      const bullet = new Bullet({
-        app: this.app,
-        x: this.item.x,
-        y: this.item.y,
-        that: this,
-      });
-      this.app.stage.addChild(bullet.item);
-      // bullet.moveToTarget(this.monsterList[0]);
-      // bullet.isCollison(this.monsterList[0]);
-    }, 500);
-
-    this.app.ticker.add(() => {
-      b();
-    });
-    return;
   };
 
   getItem = () => {
