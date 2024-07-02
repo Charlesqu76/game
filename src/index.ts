@@ -1,6 +1,7 @@
-import { Application } from "pixi.js";
+import { Application, Text } from "pixi.js";
 import MainCharacter from "./MainCharacter";
 import Monster from "./Monster";
+import { D } from "./renderData";
 
 class App {
   app: Application;
@@ -16,28 +17,55 @@ class App {
     this.app.ticker.minFPS = this.FPX;
   };
 
-  start = () => {
+  start = async () => {
     this.mainCharacter = new MainCharacter({
-      app: this.app,
-      x: 500,
-      y: 500,
+      app: this,
+      x: this.app.screen.width / 2,
+      y: this.app.screen.height / 2,
     });
 
-    console.log(this.mainCharacter);
+    await this.mainCharacter.init();
+    const d = new D();
+    d.create(this);
+    d.render();
 
-    for (let i = 0; i <= 0; i++) {
-      const monster = new Monster({
-        app: this.app,
-        x: Math.random() * 100 * 5,
-        y: Math.random() * 100 * 5,
-      });
+    this.mainCharacter.autoShoot();
 
-      // monster.moveToTarget(mainCharacter);
-      // monster.isCollison(mainCharacter);
-      this.monsterList.push(monster);
-    }
+    const text = new Text({
+      text: "hello",
+      style: {
+        fontFamily: "short-stack",
+      },
+    });
+    this.app.stage.addChild(text);
+
+    // const monster = new Monster({
+    //   app: this,
+    //   x: Math.random() * 100 * 5,
+    //   y: Math.random() * 100 * 5,
+    // });
+    // this.app.stage.addChild(monster.item);
+    // monster.moveToTarget(this.mainCharacter);
+    // this.monsterList.push(monster);
+
+    this.app.ticker.add(() => {
+      text.text = this.monsterList.length;
+    });
+
+    // setInterval(() => {
+    //   const monster = new Monster({
+    //     app: this,
+    //     x: Math.random() * 100 * 5,
+    //     y: Math.random() * 100 * 5,
+    //   });
+    //   this.app.stage.addChild(monster.item);
+    //   monster.moveToTarget(this.mainCharacter);
+    //   this.monsterList.push(monster);
+    // }, 500);
   };
 }
+
+export { App };
 
 (async () => {
   const app = new App();

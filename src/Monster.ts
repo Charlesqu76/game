@@ -3,6 +3,7 @@ import Character from "./Character";
 
 export default class Monster extends Character {
   item = null;
+
   constructor(props) {
     super(props);
     this.init();
@@ -10,8 +11,8 @@ export default class Monster extends Character {
   init = async () => {
     this.item = this.getItem();
     this.item.x = this.x;
-    this.item.yd = this.y;
-    this.app.stage.addChild(this.item);
+    this.item.y = this.y;
+    this.app.app.stage.addChild(this.item);
   };
 
   getItem = (): Graphics => {
